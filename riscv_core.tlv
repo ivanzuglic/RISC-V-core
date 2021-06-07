@@ -45,8 +45,9 @@
    // ---------- (1) PC -------------------------------
    $reset = *reset;
    $pc[31:0] = >>1$next_pc;
-   $next_pc[31:0] = $reset ? 32'b0 : $pc + 4;
-   
+   $next_pc[31:0] = $reset ? 32'b0 :
+                    $taken_br ? $br_tgt_pc :
+                    $pc + 32'd4;
    // ---------- (2) IMEM ----------------------------
    `READONLY_MEM($pc, $$instr[31:0]);
    
@@ -123,8 +124,8 @@
    // branching logic
    $taken_br = $is_beq ? ($src1_value == $src2_value) :
                $is_bne ? ($src1_value != $src2_value) :
-               $is_blt ? ($src1_value < $src2_value) ^ ($src1_value[31] != $src2_value[31])) :
-               $is_bge ? ($src1_value >= $src2_value) ^ ($src1_value[31] != $src2_value[31])) :
+               $is_blt ? (($src1_value < $src2_value) ^ ($src1_value[31] != $src2_value[31])) :
+               $is_bge ? (($src1_value >= $src2_value) ^ ($src1_value[31] != $src2_value[31])) :
                $is_bltu ? ($src1_value < $src2_value) :
                $is_blt ? ($src1_value < $src2_value) :
                $is_bgeu ? ($src1_value >= $src2_value) :
@@ -133,7 +134,8 @@
    $br_tgt_pc[31:0] = $pc + $imm;
    
    // Assert these to end simulation (before Makerchip cycle limit).
-   *passed = 1'b0;
+   //*passed = 1'b0;
+   m4+tb() // check if program passed
    *failed = *cyc_cnt > M4_MAX_CYC;
    
    // ---------- (4) REGISTER FILE ----------------------
