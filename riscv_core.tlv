@@ -180,6 +180,8 @@
                    $is_slti ? (($src1_value[31] == $imm[31]) ? $sltiu_rslt : {31'b0, $src1_value[31]}) :
                    $is_sra ? $sra_rslt[31:0] :
                    $is_srai ? $srai_rslt[31:0] :
+                   $is_load ? $src1_value + $imm :
+                   $is_s_instr ? $src1_value + $imm :
                    32'b0;
    // writing $result back in destination register (rd) if the instruction has a valid rd
    // --all done through m4+rf()
