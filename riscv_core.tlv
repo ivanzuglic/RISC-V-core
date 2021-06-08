@@ -47,6 +47,8 @@
    $pc[31:0] = >>1$next_pc;
    $next_pc[31:0] = $reset ? 32'b0 :
                     $taken_br ? $br_tgt_pc :
+                    $is_jal ? $br_tgt_pc :
+                    $is_jalr ? $jalr_tgt_pc :
                     $pc + 32'd4;
    // ---------- (2) IMEM ----------------------------
    `READONLY_MEM($pc, $$instr[31:0]);
@@ -186,7 +188,7 @@
    //$rf_wr_data[31:0] = $result; 
    // ...
 
-   // branching logic
+   // conditional branching logic
    $taken_br = $is_beq ? ($src1_value == $src2_value) :
                $is_bne ? ($src1_value != $src2_value) :
                $is_blt ? (($src1_value < $src2_value) ^ ($src1_value[31] != $src2_value[31])) :
@@ -197,6 +199,11 @@
                1'b0;
    
    $br_tgt_pc[31:0] = $pc + $imm;
+   
+   // jumping
+   $jalr_tgt_pc[31:0] = $src1_value + $imm;
+   
+   
    
    // Assert these to end simulation (before Makerchip cycle limit).
    //*passed = 1'b0;
