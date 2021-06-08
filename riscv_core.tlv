@@ -86,6 +86,7 @@
    $rd_valid = $is_r_instr || $is_i_instr || $is_u_instr || $is_j_instr;
    $imm_valid = $is_b_instr || $is_i_instr || $is_u_instr || $is_j_instr || $is_s_instr;
    $funct3_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr;
+   //$funct7_valid = $is_r_instr;
    // for removing signals from log
    `BOGUS_USE($rd $rd_valid $rs1 $rs1_valid $rs2_valid $rd_valid $imm_valid
               $funct7 $funct3 $rs2 $opcode $funct3_valid)
@@ -117,10 +118,12 @@
                    $is_add ? $src1_value + $src2_value :
                    32'b0;
    // writing $result back in destination register (rd) if the instruction has a valid rd
-   $rf_wr_en = $rd_valid && ($rd != 5'b0);
-   $rf_wr_index[4:0] = $rd;
-   $rf_wr_data[31:0] = $result; // need to finish
-   
+   // --all done through m4+rf()
+   //$rf_wr_en = $rd_valid && ($rd != 5'b0);
+   //$rf_wr_index[4:0] = $rd;
+   //$rf_wr_data[31:0] = $result; 
+   // ...
+
    // branching logic
    $taken_br = $is_beq ? ($src1_value == $src2_value) :
                $is_bne ? ($src1_value != $src2_value) :
@@ -134,12 +137,12 @@
    $br_tgt_pc[31:0] = $pc + $imm;
    
    // Assert these to end simulation (before Makerchip cycle limit).
-   //*passed = 1'b0;
-   m4+tb() // check if program passed
+   *passed = 1'b0;
+   //m4+tb() // check if program passed
    *failed = *cyc_cnt > M4_MAX_CYC;
    
    // ---------- (4) REGISTER FILE ----------------------
-   m4+rf(32, 32, $reset, $rf_wr_en, $rf_wr_index[4:0], $rf_wr_data[31:0], $rs1_valid, $rs1[4:0], $src1_value, $rs2_valid, $rs2[4:0], $src2_value)
+   m4+rf(32, 32, $reset, $rd_valid && ($rd != 5'b0), $rd, $result, $rs1_valid, $rs1, $src1_value, $rs2_valid, $rs2, $src2_value)
    // ---------- (7) DMEM ----------------------
    //m4+dmem(32, 32, $reset, $addr[4:0], $wr_en, $wr_data[31:0], $rd_en, $rd_data)
    
