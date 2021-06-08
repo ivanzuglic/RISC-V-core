@@ -20,21 +20,21 @@
    //  x13 (a3): 1..10
    //  x14 (a4): Sum
    // 
-   m4_asm(ADDI, x14, x0, 0)             // Initialize sum register a4 with 0
-   m4_asm(ADDI, x12, x0, 1010)          // Store count of 10 in register a2.
-   m4_asm(ADDI, x13, x0, 1)             // Initialize loop count register a3 with 0
+   // m4_asm(ADDI, x14, x0, 0)             // Initialize sum register a4 with 0
+   // m4_asm(ADDI, x12, x0, 1010)          // Store count of 10 in register a2.
+   // m4_asm(ADDI, x13, x0, 1)             // Initialize loop count register a3 with 0
    // Loop:
-   m4_asm(ADD, x14, x13, x14)           // Incremental summation
-   m4_asm(ADDI, x13, x13, 1)            // Increment loop count by 1
-   m4_asm(BLT, x13, x12, 1111111111000) // If a3 is less than a2, branch to label named <loop>
+   // m4_asm(ADD, x14, x13, x14)           // Incremental summation
+   // m4_asm(ADDI, x13, x13, 1)            // Increment loop count by 1
+   // m4_asm(BLT, x13, x12, 1111111111000) // If a3 is less than a2, branch to label named <loop>
    // Test result value in x14, and set x31 to reflect pass/fail.
    //m4_asm(ADD, x0, x14, x1)            // For testing that x0 cannot be written
-   m4_asm(ADDI, x30, x14, 111111010100) // Subtract expected value of 44 to set x30 to 1 if and only iff the result is 45 (1 + 2 + ... + 9).
-   m4_asm(BGE, x0, x0, 0) // Done. Jump to itself (infinite loop). (Up to 20-bit signed immediate plus implicit 0 bit (unlike JALR) provides byte address; last immediate bit should also be 0)
-   m4_asm_end()
-   m4_define(['M4_MAX_CYC'], 50)
+   // m4_asm(ADDI, x30, x14, 111111010100) // Subtract expected value of 44 to set x30 to 1 if and only iff the result is 45 (1 + 2 + ... + 9).
+   // m4_asm(BGE, x0, x0, 0) // Done. Jump to itself (infinite loop). (Up to 20-bit signed immediate plus implicit 0 bit (unlike JALR) provides byte address; last immediate bit should also be 0)
+   // m4_asm_end()
+   // m4_define(['M4_MAX_CYC'], 50)
    //---------------------------------------------------------------------------------
-
+   m4_test_prog()
 
 
 \SV
@@ -102,16 +102,44 @@
    // decoding instructions
    $dec_bits[10:0] = {$funct7[5],$funct3,$opcode}; // in table:
    //                       funct7|funct3|opcode
-   $is_beq = $dec_bits ==? 11'bx0001100011; // x -> $funct7 not used for BEQ instruction (look at the table)
-   $is_bne = $dec_bits ==? 11'bx0011100011;
-   $is_blt = $dec_bits ==? 11'bx1001100011;
-   $is_bge = $dec_bits ==? 11'bx1011100011;
+   $is_beq  = $dec_bits ==? 11'bx0001100011; // x -> $funct7 not used for BEQ instruction (look at the table)
+   $is_bne  = $dec_bits ==? 11'bx0011100011;
+   $is_blt  = $dec_bits ==? 11'bx1001100011;
+   $is_bge  = $dec_bits ==? 11'bx1011100011;
    $is_bltu = $dec_bits ==? 11'bx1101100011;
    $is_bgeu = $dec_bits ==? 11'bx1111100011;
    $is_addi = $dec_bits ==? 11'bx0000010011;
-   $is_add = $dec_bits ==? 11'b00000110011;
+   $is_add  = $dec_bits ==? 11'b00000110011;
    
    `BOGUS_USE($is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add)
+   
+   $is_lui   = $dec_bits ==? 11'bxxxx0110111;
+   $is_auipc = $dec_bits ==? 11'bxxxx0010111;
+   $is_jal   = $dec_bits ==? 11'bxxxx1101111;
+   $is_jalr  = $dec_bits ==? 11'bx0001100111;
+   
+   $is_slti  = $dec_bits ==? 11'bx0100010011;
+   $is_sltiu = $dec_bits ==? 11'bx0110010011;
+   $is_xori  = $dec_bits ==? 11'bx1000010011;
+   $is_ori   = $dec_bits ==? 11'bx1100010011;
+   $is_andi  = $dec_bits ==? 11'bx1110010011;
+   $is_slli  = $dec_bits ==? 11'b00010010011;
+   $is_srli  = $dec_bits ==? 11'b01010010011;
+   $is_srai  = $dec_bits ==? 11'b11010010011;
+   $is_sub   = $dec_bits ==? 11'b10000110011;
+   $is_sll   = $dec_bits ==? 11'b00010110011;
+   $is_slt   = $dec_bits ==? 11'b00100110011;
+   $is_sltu  = $dec_bits ==? 11'b00110110011;
+   $is_xor   = $dec_bits ==? 11'b01000110011;
+   $is_srl   = $dec_bits ==? 11'b01010110011;
+   $is_sra   = $dec_bits ==? 11'b11010110011;
+   $is_or    = $dec_bits ==? 11'b01100110011;
+   $is_and   = $dec_bits ==? 11'b01110110011;
+   
+   // this implementation treats all loads and all stores the same
+   $is_load  = $opcode == 7'b0000011;
+   // $is_s_instr already identifies stores
+   
    
    // ---------- (5) ALU ---------------------------------------
    $result[31:0] = $is_addi ? $src1_value + $imm :
@@ -137,8 +165,8 @@
    $br_tgt_pc[31:0] = $pc + $imm;
    
    // Assert these to end simulation (before Makerchip cycle limit).
-   *passed = 1'b0;
-   //m4+tb() // check if program passed
+   //*passed = 1'b0;
+   m4+tb() // check if program passed
    *failed = *cyc_cnt > M4_MAX_CYC;
    
    // ---------- (4) REGISTER FILE ----------------------
