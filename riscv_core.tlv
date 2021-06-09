@@ -51,7 +51,7 @@
                     $is_jalr ? $jalr_tgt_pc :
                     $pc + 32'd4;
    // ---------- (2) IMEM ----------------------------
-   `READONLY_MEM($pc, $$instr[31:0]);
+   `READONLY_MEM($pc, $instr[31:0]);
    
    // ---------- (3) DECODE/INSTR_TYPE ----------------------
    $is_u_instr = $instr[6:2] == 5'b00101 ||
