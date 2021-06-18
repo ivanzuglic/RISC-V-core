@@ -90,8 +90,8 @@
    $funct3_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr;
    //$funct7_valid = $is_r_instr;
    // for removing signals from log
-   `BOGUS_USE($rd $rd_valid $rs1 $rs1_valid $rs2_valid $rd_valid $imm_valid
-              $funct7 $funct3 $rs2 $opcode $funct3_valid)
+   //`BOGUS_USE($rd $rd_valid $rs1 $rs1_valid $rs2_valid $rd_valid $imm_valid
+   //           $funct7 $funct3 $rs2 $opcode $funct3_valid)
    
    // extracting immediate values
    $imm[31:0] = $is_i_instr ? {{21{$instr[31]}}, $instr[30:20]} :
@@ -113,7 +113,7 @@
    $is_addi = $dec_bits ==? 11'bx0000010011;
    $is_add  = $dec_bits ==? 11'b00000110011;
    
-   `BOGUS_USE($is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add)
+   //`BOGUS_USE($is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add)
    
    $is_lui   = $dec_bits ==? 11'bxxxx0110111;
    $is_auipc = $dec_bits ==? 11'bxxxx0010111;
@@ -210,7 +210,7 @@
    // Assert these to end simulation (before Makerchip cycle limit).
    //*passed = 1'b0;
    m4+tb() // check if program passed
-   *failed = *cyc_cnt > M4_MAX_CYC;
+   //*failed = *cyc_cnt > M4_MAX_CYC;
    
    // ---------- (4) REGISTER FILE ----------------------
    m4+rf(32, 32, $reset, $rd_valid && ($rd != 5'b0), $rd, $is_load ? $ld_data : $result, $rs1_valid, $rs1, $src1_value, $rs2_valid, $rs2, $src2_value)
