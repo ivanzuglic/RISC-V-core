@@ -1,2 +1,2 @@
 # RISC-V-core
-Implementation of RISC-V core in TL-Verilog and SystemVerilog
+My implementation of RISC-V core in TL-Verilog and SystemVerilog
