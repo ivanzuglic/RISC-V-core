@@ -383,30 +383,30 @@ generate
    assign reset_a0 = reset;
    assign pc[31:0] = next_pc_a1;
    assign next_pc[31:0] = reset_a0 ? 32'b0 :
-                    taken_br ? br_tgt_pc :
-                    is_jal ? br_tgt_pc :
-                    is_jalr ? jalr_tgt_pc :
-                    pc + 32'd4;
+                          taken_br ? br_tgt_pc :
+                          is_jal ? br_tgt_pc :
+                          is_jalr ? jalr_tgt_pc :
+                          pc + 32'd4;
    // ---------- (2) IMEM -----------------------------------
    `READONLY_MEM(pc, instr[31:0]);
    
    // ---------- (3) DECODE/INSTR_TYPE ----------------------
    assign is_u_instr = instr[6:2] == 5'b00101 ||
-                 instr[6:2] == 5'b01101;
+                       instr[6:2] == 5'b01101;
    // or: $is_u_instr = $instr[6:2] ==? 5'b0x101;             
    assign is_i_instr = instr[6:2] == 5'b00000 ||
-                 instr[6:2] == 5'b00001 ||
-                 instr[6:2] == 5'b00100 ||
-                 instr[6:2] == 5'b00110 ||
-                 instr[6:2] == 5'b11001;
+                       instr[6:2] == 5'b00001 ||
+                       instr[6:2] == 5'b00100 ||
+                       instr[6:2] == 5'b00110 ||
+                       instr[6:2] == 5'b11001;
    
    assign is_r_instr = instr[6:2] == 5'b01011 ||
-                 instr[6:2] == 5'b01100 ||
-                 instr[6:2] == 5'b01110 ||
-                 instr[6:2] == 5'b10100;
-   
+                       instr[6:2] == 5'b01100 ||
+                       instr[6:2] == 5'b01110 ||
+                       instr[6:2] == 5'b10100;
+       
    assign is_s_instr = instr[6:2] == 5'b01000 ||
-                 instr[6:2] == 5'b01001;
+                       instr[6:2] == 5'b01001;
    
    assign is_b_instr = instr[6:2] == 5'b11000;
    
@@ -430,11 +430,11 @@ generate
    
    // extracting immediate values
    assign imm[31:0] = is_i_instr ? {{21{instr[31]}}, instr[30:20]} :
-                is_s_instr ? {{21{instr[31]}}, instr[30:25], instr[11:7]} :
-                is_b_instr ? {{20{instr[31]}}, instr[7], instr[30:25], instr[11:8], 1'b0} :
-                is_u_instr ? {instr[31:12], 12'b0} :
-                is_j_instr ? {{12{instr[31]}}, instr[19:12], instr[20], instr[30:21], 1'b0} :
-                              32'b0; // default
+                      is_s_instr ? {{21{instr[31]}}, instr[30:25], instr[11:7]} :
+                      is_b_instr ? {{20{instr[31]}}, instr[7], instr[30:25], instr[11:8], 1'b0} :
+                      is_u_instr ? {instr[31:12], 12'b0} :
+                      is_j_instr ? {{12{instr[31]}}, instr[19:12], instr[20], instr[30:21], 1'b0} :
+                      32'b0; // default
    
    // decoding instructions
    assign dec_bits[10:0] = {funct7[5],funct3,opcode}; // in table:
@@ -492,31 +492,31 @@ generate
    
    // exit of ALU == $result
    assign result[31:0] = is_addi ? src1_value + imm :
-                   is_add ? src1_value + src2_value :
-                   is_andi ? src1_value & imm :
-                   is_ori ? src1_value | imm :
-                   is_xori ? src1_value ^ imm :
-                   is_slli ? src1_value << imm[5:0] :
-                   is_srli ? src1_value >> imm[5:0] :
-                   is_and ? src1_value & src2_value :
-                   is_or ? src1_value | src2_value :
-                   is_xor ? src1_value ^ src2_value :
-                   is_sub ? src1_value - src2_value :
-                   is_sll ? src1_value << src2_value[4:0] :
-                   is_srl ? src1_value >> src2_value[4:0] :
-                   is_sltu ? sltu_rslt :
-                   is_sltiu ? sltiu_rslt :
-                   is_lui ? {imm[31:12], 12'b0} :
-                   is_auipc ? pc + imm :
-                   is_jal ? pc + 32'd4 :
-                   is_jalr ? pc + 32'd4 :
-                   is_slt ? ((src1_value[31] == src2_value[31]) ? sltu_rslt : {31'b0, src1_value[31]}) :
-                   is_slti ? ((src1_value[31] == imm[31]) ? sltiu_rslt : {31'b0, src1_value[31]}) :
-                   is_sra ? sra_rslt[31:0] :
-                   is_srai ? srai_rslt[31:0] :
-                   is_load ? src1_value + imm :
-                   is_s_instr ? src1_value + imm :
-                   32'b0;
+                         is_add ? src1_value + src2_value :
+                         is_andi ? src1_value & imm :
+                         is_ori ? src1_value | imm :
+                         is_xori ? src1_value ^ imm :
+                         is_slli ? src1_value << imm[5:0] :
+                         is_srli ? src1_value >> imm[5:0] :
+                         is_and ? src1_value & src2_value :
+                         is_or ? src1_value | src2_value :
+                         is_xor ? src1_value ^ src2_value :
+                         is_sub ? src1_value - src2_value :
+                         is_sll ? src1_value << src2_value[4:0] :
+                         is_srl ? src1_value >> src2_value[4:0] :
+                         is_sltu ? sltu_rslt :
+                         is_sltiu ? sltiu_rslt :
+                         is_lui ? {imm[31:12], 12'b0} :
+                         is_auipc ? pc + imm :
+                         is_jal ? pc + 32'd4 :
+                         is_jalr ? pc + 32'd4 :
+                         is_slt ? ((src1_value[31] == src2_value[31]) ? sltu_rslt : {31'b0, src1_value[31]}) :
+                         is_slti ? ((src1_value[31] == imm[31]) ? sltiu_rslt : {31'b0, src1_value[31]}) :
+                         is_sra ? sra_rslt[31:0] :
+                         is_srai ? srai_rslt[31:0] :
+                         is_load ? src1_value + imm :
+                         is_s_instr ? src1_value + imm :
+                         32'b0;
    // writing $result back in destination register (rd) if the instruction has a valid rd
    // --all done through (6)
    //$rf_wr_en = $rd_valid && ($rd != 5'b0);
@@ -526,13 +526,13 @@ generate
 
    // conditional branching logic
    assign taken_br = is_beq ? (src1_value == src2_value) :
-               is_bne ? (src1_value != src2_value) :
-               is_blt ? ((src1_value < src2_value) ^ (src1_value[31] != src2_value[31])) :
-               is_bge ? ((src1_value >= src2_value) ^ (src1_value[31] != src2_value[31])) :
-               is_bltu ? (src1_value < src2_value) :
-               is_blt ? (src1_value < src2_value) :
-               is_bgeu ? (src1_value >= src2_value) :
-               1'b0;
+                     is_bne ? (src1_value != src2_value) :
+                     is_blt ? ((src1_value < src2_value) ^ (src1_value[31] != src2_value[31])) :
+                     is_bge ? ((src1_value >= src2_value) ^ (src1_value[31] != src2_value[31])) :
+                     is_bltu ? (src1_value < src2_value) :
+                     is_blt ? (src1_value < src2_value) :
+                     is_bgeu ? (src1_value >= src2_value) :
+                     1'b0;
    
    assign br_tgt_pc[31:0] = pc + imm;
    
