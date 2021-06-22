@@ -113,17 +113,17 @@ logic [31:0] br_tgt_pc;
 // For $dec_bits.
 logic [10:0] dec_bits;
 
-// For $dmem1_addr.
-logic [$clog2(32)-1:0] dmem1_addr;
+// For $dmem_addr.
+logic [$clog2(32)-1:0] dmem_addr;
 
-// For $dmem1_rd_en.
-logic dmem1_rd_en;
+// For $dmem_rd_en.
+logic dmem_rd_en;
 
-// For $dmem1_wr_data.
-logic [32-1:0] dmem1_wr_data;
+// For $dmem_wr_data.
+logic [32-1:0] dmem_wr_data;
 
-// For $dmem1_wr_en.
-logic dmem1_wr_en;
+// For $dmem_wr_en.
+logic dmem_wr_en;
 
 // For $funct3.
 logic [2:0] funct3;
@@ -279,26 +279,26 @@ logic reset_a0;
 // For $result.
 logic [31:0] result;
 
-// For $rf1_rd_en1.
-logic rf1_rd_en1;
+// For $rf_rd_en1.
+logic rf_rd_en1;
 
-// For $rf1_rd_en2.
-logic rf1_rd_en2;
+// For $rf_rd_en2.
+logic rf_rd_en2;
 
-// For $rf1_rd_index1.
-logic [$clog2(32)-1:0] rf1_rd_index1;
+// For $rf_rd_index1.
+logic [$clog2(32)-1:0] rf_rd_index1;
 
-// For $rf1_rd_index2.
-logic [$clog2(32)-1:0] rf1_rd_index2;
+// For $rf_rd_index2.
+logic [$clog2(32)-1:0] rf_rd_index2;
 
-// For $rf1_wr_data.
-logic [32-1:0] rf1_wr_data;
+// For $rf_wr_data.
+logic [32-1:0] rf_wr_data;
 
-// For $rf1_wr_en.
-logic rf1_wr_en;
+// For $rf_wr_en.
+logic rf_wr_en;
 
-// For $rf1_wr_index.
-logic [$clog2(32)-1:0] rf1_wr_index;
+// For $rf_wr_index.
+logic [$clog2(32)-1:0] rf_wr_index;
 
 // For $rs1.
 logic [4:0] rs1;
@@ -541,53 +541,59 @@ generate
    
    // ---------- (4)(6) REGISTER FILE ------------------------------
    
-      assign rf1_wr_en = rd_valid && (rd != 5'b0);
-      assign rf1_wr_index[$clog2(32)-1:0]  = rd;
-      assign rf1_wr_data[32-1:0] = is_load ? ld_data : result;
+      // Register File Read (4)
+      assign rf_rd_en1 = rs1_valid;
+      assign rf_rd_index1[$clog2(32)-1:0] = rs1;
       
-      assign rf1_rd_en1 = rs1_valid;
-      assign rf1_rd_index1[$clog2(32)-1:0] = rs1;
+      assign rf_rd_en2 = rs2_valid;
+      assign rf_rd_index2[$clog2(32)-1:0] = rs2;
+       
+      assign src1_value[32-1:0]  =  rf_rd_en1 ? Xreg_value_a0[rf_rd_index1] : 'X;
+      assign src2_value[32-1:0]  =  rf_rd_en2 ? Xreg_value_a0[rf_rd_index2] : 'X;
       
-      assign rf1_rd_en2 = rs2_valid;
-      assign rf1_rd_index2[$clog2(32)-1:0] = rs2;
-      
+      // Register File Write (6)
+      assign rf_wr_en = rd_valid && (rd != 5'b0);
+      assign rf_wr_index[$clog2(32)-1:0]  = rd;
+      assign rf_wr_data[32-1:0] = is_load ? ld_data : result;
+          
       for (xreg = 0; xreg <= 31; xreg++) begin : L1_Xreg //_/xreg
 
          // For $wr.
          logic L1_wr;
 
-         assign L1_wr = rf1_wr_en && (rf1_wr_index == xreg);
+         assign L1_wr = rf_wr_en && (rf_wr_index == xreg);
          assign Xreg_value_n1[xreg][32-1:0] = reset_a0 ? xreg :
-                                              L1_wr ? rf1_wr_data :
+                                              L1_wr ? rf_wr_data :
                                               Xreg_value_a0[xreg][32-1:0];
       end
       
-      assign src1_value[32-1:0]  =  rf1_rd_en1 ? Xreg_value_a0[rf1_rd_index1] : 'X;
-      assign src2_value[32-1:0]  =  rf1_rd_en2 ? Xreg_value_a0[rf1_rd_index2] : 'X;
-      
-  
+
 
    // ---------- (7) DMEM ----------------------
   
-      // Allow expressions for most inputs, so define input signals.
-      assign dmem1_wr_en = is_s_instr;
-      assign dmem1_addr[$clog2(32)-1:0] = result[6:2];
-      assign dmem1_wr_data[32-1:0] = src2_value;
+      // get address for load/store
+      assign dmem_addr[$clog2(32)-1:0] = result[6:2];
       
-      assign dmem1_rd_en = is_load;
+      // Loading from DMem
+      assign dmem_rd_en = is_load;
+      assign ld_data[32-1:0] = dmem_rd_en ? Dmem_value_a0[dmem_addr] : 'X;
       
+      // Storing into DMem
+      assign dmem_wr_en = is_s_instr;     
+      assign dmem_wr_data[32-1:0] = src2_value;
+                 
       for (dmem = 0; dmem <= 31; dmem++) begin : L1_Dmem //_/dmem
 
          // For $wr.
          logic L1_wr;
 
-         assign L1_wr = dmem1_wr_en && (dmem1_addr == dmem);
+         assign L1_wr = dmem_wr_en && (dmem_addr == dmem);
          assign Dmem_value_n1[dmem][32-1:0] = reset_a0 ? 0 :
-                                              L1_wr ? dmem1_wr_data :
+                                              L1_wr ? dmem_wr_data :
                                               Dmem_value_a0[dmem][32-1:0];
       end
       
-      assign ld_data[32-1:0] = dmem1_rd_en ? Dmem_value_a0[dmem1_addr] : 'X;
+   
       
       //-------------------------------------------------------------------------
       
