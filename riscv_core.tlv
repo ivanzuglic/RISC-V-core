@@ -34,6 +34,13 @@
    // m4_asm_end()
    // m4_define(['M4_MAX_CYC'], 50)
    //---------------------------------------------------------------------------------
+   // test program for BLT
+   //m4_asm(ADDI, x1, x0, 10101)           // An operand value of 21.
+   //m4_asm(ADDI, x2, x0, 111111111101)    // An operand value of -3.
+   //m4_asm(ADDI, x3, x0, 111111111100)    // An operand value of -4.
+   //m4_asm(BLT, x3, x2, 0) 
+   //m4_asm(ANDI, x5, x1, 1011100)
+   //m4_asm_end()
    m4_test_prog()
 
 
