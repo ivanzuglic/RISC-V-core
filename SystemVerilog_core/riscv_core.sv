@@ -91,6 +91,22 @@
  //(ADDI, x30, x0, 1)
  //(JAL, x0, 0) // Done. Jump to itself (infinite loop). (Up to 20-bit signed immediate plus implicit 0 bit (unlike JALR) provides byte address; last immediate bit should also be 0)
 
+
+// test program for BLT (need to comment test program above): 
+// --testing positive and negative
+// x2 = 7, x3 = -4
+// (BLT, x3, x2, 0) ==> (x3 < x2) ==> x5 = 5
+//`define READONLY_MEM(ADDR, DATA) logic [31:0] instrs [0:5-1]; assign DATA = instrs[ADDR[$clog2($size(instrs)) + 1 : 2]]; assign instrs = '{{12'b10101, 5'd0, 3'b000, 5'd1, 7'b0010011}, {12'b111, 5'd0, 3'b000, 5'd2, 7'b0010011}, {12'b111111111100, 5'd0, 3'b000, 5'd3, 7'b0010011}, {1'b0, 6'b000000, 5'd2, 5'd3, 3'b100, 4'b0000, 1'b0, 7'b1100011}, {12'b1011100, 5'd1, 3'b111, 5'd5, 7'b0010011}};
+// (BLT, x2, x3, 0) ==> (x2 < x3) ==> x5 = 20
+//`define READONLY_MEM(ADDR, DATA) logic [31:0] instrs [0:5-1]; assign DATA = instrs[ADDR[$clog2($size(instrs)) + 1 : 2]]; assign instrs = '{{12'b10101, 5'd0, 3'b000, 5'd1, 7'b0010011}, {12'b111, 5'd0, 3'b000, 5'd2, 7'b0010011}, {12'b111111111100, 5'd0, 3'b000, 5'd3, 7'b0010011}, {1'b0, 6'b000000, 5'd3, 5'd2, 3'b100, 4'b0000, 1'b0, 7'b1100011}, {12'b1011100, 5'd1, 3'b111, 5'd5, 7'b0010011}};
+// --testing negative and negative
+// x2 = -3, x3 = -4
+// (BLT, x3, x2, 0) ==> (x3 < x2) ==> x5 = 5
+//`define READONLY_MEM(ADDR, DATA) logic [31:0] instrs [0:5-1]; assign DATA = instrs[ADDR[$clog2($size(instrs)) + 1 : 2]]; assign instrs = '{{12'b10101, 5'd0, 3'b000, 5'd1, 7'b0010011}, {12'b111111111101, 5'd0, 3'b000, 5'd2, 7'b0010011}, {12'b111111111100, 5'd0, 3'b000, 5'd3, 7'b0010011}, {1'b0, 6'b000000, 5'd2, 5'd3, 3'b100, 4'b0000, 1'b0, 7'b1100011}, {12'b1011100, 5'd1, 3'b111, 5'd5, 7'b0010011}};
+// (BLT, x2, x3, 0) ==> (x2 < x3) ==> x5 = 20
+//`define READONLY_MEM(ADDR, DATA) logic [31:0] instrs [0:5-1]; assign DATA = instrs[ADDR[$clog2($size(instrs)) + 1 : 2]]; assign instrs = '{{12'b10101, 5'd0, 3'b000, 5'd1, 7'b0010011}, {12'b111111111101, 5'd0, 3'b000, 5'd2, 7'b0010011}, {12'b111111111100, 5'd0, 3'b000, 5'd3, 7'b0010011}, {1'b0, 6'b000000, 5'd3, 5'd2, 3'b100, 4'b0000, 1'b0, 7'b1100011}, {12'b1011100, 5'd1, 3'b111, 5'd5, 7'b0010011}};
+
+
   module core(
         input clk, 
         input reset, 
