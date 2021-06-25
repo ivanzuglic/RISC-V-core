@@ -39,17 +39,17 @@
    //m4_asm(ADDI, x2, x0, 111111111101)    // An operand value of -3.
    //m4_asm(ADDI, x3, x0, 111111111100)    // An operand value of -4.
    //m4_asm(BLT, x3, x2, 1000)
-   //m4_asm(ANDI, x4, x1, 1011100)
+   //m4_asm(ANDI, x6, x1, 1011100)
    //m4_asm(BGE, x2, x3, 1000) 
-   //m4_asm(ANDI, x4, x1, 1011100)
+   //m4_asm(ANDI, x7, x1, 1011100)
    //m4_asm(BEQ, x2, x2, 1000)
-   //m4_asm(ANDI, x4, x1, 1011100)
+   //m4_asm(ANDI, x8, x1, 1011100)
    //m4_asm(BNE, x3, x2, 1000)
-   //m4_asm(ANDI, x4, x1, 1011100)
+   //m4_asm(ANDI, x9, x1, 1011100)
    //m4_asm(BLTU, x0, x1, 1000)
-   //m4_asm(ANDI, x4, x1, 1011100)
+   //m4_asm(ANDI, x10, x1, 1011100)
    //m4_asm(BGEU, x1, x0, 1000)
-   //m4_asm(ANDI, x4, x1, 1011100)
+   //m4_asm(ANDI, x11, x1, 1011100)
    //m4_asm(ANDI, x5, x1, 1011100)
    //m4_asm(BGE, x0, x0, 0)            // Done. Jump to itself    
    //m4_asm_end()
