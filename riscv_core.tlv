@@ -34,12 +34,18 @@
    // m4_asm_end()
    // m4_define(['M4_MAX_CYC'], 50)
    //---------------------------------------------------------------------------------
-   // test program for BLT
+   // test program for branching
    //m4_asm(ADDI, x1, x0, 10101)           // An operand value of 21.
    //m4_asm(ADDI, x2, x0, 111111111101)    // An operand value of -3.
    //m4_asm(ADDI, x3, x0, 111111111100)    // An operand value of -4.
-   //m4_asm(BLT, x3, x2, 0) 
+   //m4_asm(BLT, x2, x3, 0)
+   //m4_asm(BGE, x3, x2, 0)  
+   //m4_asm(BEQ, x3, x2, 0)
+   //m4_asm(BNE, x3, x3, 0)
+   //m4_asm(BLTU, x1, x0, 0)
+   //m4_asm(BGEU, x0, x1, 0)
    //m4_asm(ANDI, x5, x1, 1011100)
+   //m4_asm(BGE, x0, x0, 0)            // Done. Jump to itself    
    //m4_asm_end()
    m4_test_prog()
 
