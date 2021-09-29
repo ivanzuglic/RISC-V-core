@@ -1,10 +1,8 @@
 # RISC-V-core
-My implementation of RISC-V core in SystemVerilog and TL-Verilog.
+My implementation of RISC-V core in SystemVerilog.
 
 Repository description:
+  
+  - *SystemVerilog_core* contains sources for implementation of the core
  
-  - *riscv_core.tlv* contains source for TL-Verilog implementation of the core
- 
-  - *SystemVerilog_core* contains sources for SystemVerilog implementation of the core
- 
-  - *riscv_core* contains implemented Vivado project (for SystemVerilog version of the core) which was tested and executed on ZedBoard
+  - *riscv_core* contains implemented Vivado project which was tested and executed on ZedBoard
