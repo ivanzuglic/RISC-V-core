@@ -7,4 +7,4 @@ Repository description:
  
   -*SystemVerilog_core* contains sources for SystemVerilog implementation of the core
  
-  -*riscv_core* contains implemented Vivado project for SystemVerilog version of the core
+  -*riscv_core* contains implemented Vivado project (for SystemVerilog version of the core) which was tested and executed on ZedBoard
