@@ -1,5 +1,5 @@
 # RISC-V-core
-My implementation of RISC-V core in SystemVerilog.
+My implementation of simple RISC-V core in SystemVerilog.
 
 Repository description:
   
