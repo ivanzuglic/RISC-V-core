@@ -1,7 +1,6 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+// Author: Ivan Zuglic
 // 
 // Create Date: 06/16/2021 12:20:58 PM
 // Module Name: testbench
