@@ -497,7 +497,7 @@ generate
    assign is_or    = dec_bits ==? 11'b01100110011;
    assign is_and   = dec_bits ==? 11'b01110110011;
    
-   // this implementation treats all loads and all stores the same
+   // this implementation treats all loads and all stores the same respectively
    assign is_load  = opcode == 7'b0000011;
    // $is_s_instr already identifies stores
    
